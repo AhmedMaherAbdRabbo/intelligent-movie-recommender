@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎬 Movie Recommendation System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen hidden">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Getting recommendations...</p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">🎬 MovieRec</h1>
+            <nav class="nav">
+                <button id="stats-btn" class="nav-button">📊 Stats</button>
+                <button id="about-btn" class="nav-button">ℹ️ About</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="hero">
+                <h2 class="hero-title">Discover Your Next Favorite Movie</h2>
+                <p class="hero-subtitle">AI-powered recommendations based on your movie preferences</p>
+            </section>
+
+            <!-- Search Section -->
+            <section class="search-section">
+                <div class="search-container">
+                    <div class="search-box">
+                        <input 
+                            type="text" 
+                            id="movie-search" 
+                            class="search-input" 
+                            placeholder="Search for a movie (e.g., Toy Story, The Matrix)..."
+                        >
+                        <button id="search-btn" class="search-button">🔍</button>
+                    </div>
+                    
+                    <!-- Search Results -->
+                    <div id="search-results" class="search-results hidden">
+                        <h3>Select a movie:</h3>
+                        <div id="search-results-list" class="search-results-list"></div>
+                    </div>
+
+                    <!-- Recommendation Type -->
+                    <div class="recommendation-controls">
+                        <div class="control-group">
+                            <label for="rec-type">Recommendation Type:</label>
+                            <select id="rec-type" class="select-input">
+                                <option value="hybrid">🔀 Hybrid (Best)</option>
+                                <option value="content">🧠 Content-Based</option>
+                                <option value="collaborative">👥 Collaborative</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="num-recs">Number of Recommendations:</label>
+                            <select id="num-recs" class="select-input">
+                                <option value="5">5 movies</option>
+                                <option value="8" selected>8 movies</option>
+                                <option value="10">10 movies</option>
+                                <option value="15">15 movies</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Popular Movies Suggestions -->
+                <div class="suggestions">
+                    <h3>Try these popular movies:</h3>
+                    <div class="suggestions-list">
+                        {% for movie in popular_movies %}
+                        <button class="suggestion-btn" data-movie="{{ movie }}">{{ movie }}</button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+
+            <!-- Selected Movie Section -->
+            <section id="selected-movie" class="selected-movie hidden">
+                <h3>Selected Movie:</h3>
+                <div id="movie-details" class="movie-card">
+                    <!-- Movie details will be populated here -->
+                </div>
+                <div class="generate-recommendations">
+                    <button id="generate-btn" class="generate-button">🚀 Generate Recommendations</button>
+                </div>
+            </section>
+
+            <!-- Recommendations Section -->
+            <section id="recommendations" class="recommendations hidden">
+                <div class="recommendations-header">
+                    <h3 id="recommendations-title">Recommendations</h3>
+                    <div class="recommendations-info">
+                        <span id="rec-count">0 movies found</span>
+                        <span id="rec-type-display" class="rec-type-badge">Hybrid</span>
+                    </div>
+                </div>
+                <div id="recommendations-grid" class="recommendations-grid">
+                    <!-- Recommendations will be populated here -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Stats Modal -->
+    <div id="stats-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📊 System Statistics</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="stats-content" class="stats-grid">
+                    <!-- Stats will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Modal -->
+    <div id="about-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>ℹ️ About Movie Recommendation System</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="about-content">
+                    <h4>🎯 How it works:</h4>
+                    <ul>
+                        <li><strong>Content-Based:</strong> Recommends movies similar to your selection based on genres and movie features</li>
+                        <li><strong>Collaborative Filtering:</strong> Finds users with similar tastes and recommends movies they liked</li>
+                        <li><strong>Hybrid Approach:</strong> Combines both methods for the best recommendations</li>
+                    </ul>
+                    
+                    <h4>🚀 Features:</h4>
+                    <ul>
+                        <li>Advanced AI-powered recommendation algorithms</li>
+                        <li>Real-time movie search and filtering</li>
+                        <li>Multiple recommendation strategies</li>
+                        <li>Comprehensive movie database</li>
+                    </ul>
+                    
+                    <h4>💡 Tips:</h4>
+                    <ul>
+                        <li>Try different recommendation types to discover various movies</li>
+                        <li>Use specific movie titles for better search results</li>
+                        <li>Hybrid recommendations usually give the best results</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Message -->
+    <div id="error-message" class="error-message hidden">
+        <div class="error-content">
+            <span class="error-icon">⚠️</span>
+            <span id="error-text">An error occurred</span>
+            <button class="error-close">&times;</button>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    <div id="success-message" class="success-message hidden">
+        <div class="success-content">
+            <span class="success-icon">✅</span>
+            <span id="success-text">Success!</span>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Movie Recommendation System. Built with Flask & AI.</p>
+        </div>
+    </footer>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

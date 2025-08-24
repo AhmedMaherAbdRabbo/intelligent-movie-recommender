@@ -1,0 +1,13 @@
+# Data Science & ML
+pandas>=1.5.0
+numpy>=1.21.0
+matplotlib>=3.5.0
+seaborn>=0.11.0
+scikit-learn>=1.2.0
+
+# Web Application
+Flask>=2.2.0
+
+# Optional
+jupyter>=1.0.0
+kaggle>=1.5.12
