@@ -1,3 +1,8 @@
-/models
-/Dataset
-/deployment/models
+/models/collab_recommender.pkl
+/models/content_recommender.pkl
+/models/hybrid_recommender.pkl
+/Dataset/movies.csv
+/Dataset/ratings.csv
+/deployment/models/collab_recommender.pkl
+/deployment/models/content_recommender.pkl
+/deployment/models/hybrid_recommender.pkl
